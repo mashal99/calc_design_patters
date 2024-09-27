@@ -47,4 +47,6 @@ def divide(number_one: float, number_two: float) -> float:
     :return: The result of division.
     :raises ZeroDivisionError: If the second number is zero.
     """
+    if number_two == 0:
+        raise ZeroDivisionError("Cannot divide by zero.")
     return number_one / number_two
