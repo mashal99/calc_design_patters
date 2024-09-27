@@ -1,11 +1,50 @@
-def add(a,b):
-    return a + b
+# calculator/operations.py
 
-def subtract(a,b):
-    return a - b
+"""
+The Operations module contains functions for performing basic arithmetic operations.
+"""
 
-def multiply(a,b):
-    return a * b
 
-def divide(a,b):
-    return a / b
+def add(number_one: float, number_two: float) -> float:
+    """
+    Perform addition of two numbers.
+
+    :param number_one: The first number.
+    :param number_two: The second number.
+    :return: The result of addition.
+    """
+    return number_one + number_two
+
+
+def subtract(number_one: float, number_two: float) -> float:
+    """
+    Perform subtraction of two numbers.
+
+    :param number_one: The first number.
+    :param number_two: The second number.
+    :return: The result of subtraction.
+    """
+    return number_one - number_two
+
+
+def multiply(number_one: float, number_two: float) -> float:
+    """
+    Perform multiplication of two numbers.
+
+    :param number_one: The first number.
+    :param number_two: The second number.
+    :return: The result of multiplication.
+    """
+    return number_one * number_two
+
+
+def divide(number_one: float, number_two: float) -> float:
+    """
+    Perform division of two numbers.
+
+    :param number_one: The first number.
+    :param number_two: The second number.
+    :return: The result of division.
+    :raises ZeroDivisionError: If the second number is zero.
+    """
+    return number_one / number_two
