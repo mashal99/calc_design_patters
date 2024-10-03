@@ -33,6 +33,7 @@ This project is a Python-based calculator that performs basic arithmetic operati
    Install the necessary dependencies listed in `requirements.txt`:
    ```bash
    pip install -r requirements.txt
+
 ## Usage
 
 To use the calculator application, you can run the `main.py` script. The script accepts three command-line arguments: two numbers and the operation to perform.
@@ -42,6 +43,7 @@ To use the calculator application, you can run the `main.py` script. The script 
 python main.py <number1> <number2> <operation>
 ### Example:
 ```bash
+
 python main.py 10 5 add
 # Output: The result of 10 add 5 is: 15
 Supported operations:
