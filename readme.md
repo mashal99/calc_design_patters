@@ -41,10 +41,11 @@ To use the calculator application, you can run the `main.py` script. The script 
 ### Example Usage
 ```bash
 python main.py <number1> <number2> <operation>
+```
 ### Example:
 ```bash
-
 python main.py 10 5 add
+```
 # Output: The result of 10 add 5 is: 15
 Supported operations:
 - `add`
@@ -66,10 +67,12 @@ This project uses Pytest to handle unit testing. The tests are dynamically gener
 ### Running Tests:
 ```bash
 pytest --num_records=<number_of_tests>
+```
 
 ### Example:
 ```bash
 pytest --num_records=100
+```
 
 ## Project
 Structure
