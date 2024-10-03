@@ -1,6 +1,13 @@
+import pytest
 from calculator.operations import add, subtract, multiply, divide
 
-def test_operation(a, b, operation, expected):
-    '''Test different operations using dynamically generated test data'''
-    result = operation(a, b)
-    assert result == expected, f"Expected {expected} but got {result} for {operation.__name__} with {a}, {b}"
+def test_operations(a, b, operation, expected_result):
+    """Test multiple operations using the dynamically generated test data."""
+    if operation == 'add':
+        assert add(a, b) == expected_result
+    elif operation == 'subtract':
+        assert subtract(a, b) == expected_result
+    elif operation == 'multiply':
+        assert multiply(a, b) == expected_result
+    elif operation == 'divide':
+        assert divide(a, b) == expected_result
