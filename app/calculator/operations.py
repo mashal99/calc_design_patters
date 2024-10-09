@@ -1,5 +1,3 @@
-# calculator/operations.py
-
 """
 The Operations module contains functions for performing basic arithmetic operations.
 """

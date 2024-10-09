@@ -6,7 +6,7 @@ using dynamically generated test data. The test data is provided via pytest fixt
 used to assert the correct behavior of these functions.
 """
 
-from calculator.operations import add, subtract, multiply, divide
+from app.calculator.operations import add, subtract, multiply, divide
 
 def test_operations(first_num, second_num, operation, expected_result):
     """

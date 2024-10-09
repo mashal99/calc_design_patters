@@ -3,9 +3,9 @@ Unit tests for the alculationsHistory class using pytest.
 """
 
 import pytest
-from calculator.calculation_history import CalculationsHistory
-from calculator.calculations import Calculation
-from calculator.operations import add, subtract, multiply, divide
+from app.calculator.calculation_history import CalculationsHistory
+from app.calculator.calculations import Calculation
+from app.calculator.operations import add, subtract, multiply, divide
 
 
 @pytest.fixture(autouse=True)

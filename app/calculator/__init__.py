@@ -3,8 +3,8 @@ The Calculator module provides static methods for performing arithmetic operatio
 by leveraging the Calculation and Operations classes.
 """
 
-from calculator.calculations import Calculation
-from calculator.operations import add, subtract, multiply, divide
+from .calculations import Calculation
+from .operations import add, subtract, multiply, divide
 
 
 class Calculator:

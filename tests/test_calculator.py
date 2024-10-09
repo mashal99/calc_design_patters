@@ -2,7 +2,7 @@
 Unit tests for the Calculator class.
 """
 import pytest
-from calculator import Calculator
+from app.calculator import Calculator
 
 def test_add():
     """

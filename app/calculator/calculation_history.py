@@ -1,11 +1,9 @@
-# calculator/calculations.py
-
 """
 The CalculationsHistory class manages the history of arithmetic calculations.
 """
 
 from typing import List
-from calculator.calculations import Calculation
+from .calculations import Calculation
 
 
 class CalculationsHistory:
