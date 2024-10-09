@@ -5,8 +5,8 @@ class App:
         self.command_handler = CommandHandler()
     
     def run(self):
-
+        # Register commands
 
         while True:
-            #Using REPL
+            # Using REPL
             self.command_handler.execute_command(input(">>> "))

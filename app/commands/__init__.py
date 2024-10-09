@@ -2,7 +2,7 @@ from abc import ABC, classmethod
 
 class Command(ABC):
     @classmethod
-    def execute(SELF):
+    def execute(self):
         pass
 
 class CommandHandler:
