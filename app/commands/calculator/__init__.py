@@ -11,18 +11,25 @@ class CalculatorCommand:
     def execute(self):
         """Dynamically ask for input when executing the command."""
         try:
-            # Prompt for the operation and numbers
-            operation_name = input("Enter operation (add, subtract, multiply, divide): ").strip().lower()
+            # Prompt for the operation and validate it
+            operation_name = input("Enter operation (add, subtract, multiply, divide or 'exit' to return to main menu): ").strip().lower()
+
+            if operation_name == "exit":
+                print("Returning to main menu...")
+                return  # Exit the calculator and return to the main menu
+
+            # Validate operation
+            self.operation_func = self.get_operation_function(operation_name)
+            if not self.operation_func:
+                print(f"Error: '{operation_name}' is not a valid operation. Exiting to main menu.")
+                return  # Exit on invalid operation
+
+            # Prompt for the numbers
             a = input("Enter first number: ").strip()
             b = input("Enter second number: ").strip()
 
             # Convert inputs to Decimal
             a_decimal, b_decimal = Decimal(a), Decimal(b)
-
-            # Get the operation function
-            self.operation_func = self.get_operation_function(operation_name)
-            if not self.operation_func:
-                raise ValueError(f"Unknown operation: {operation_name}")
 
             # Set the values for the operation
             self.a = a_decimal

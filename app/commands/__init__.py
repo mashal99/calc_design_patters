@@ -14,15 +14,21 @@ class CommandHandler:
         self.commands[name] = command_callable
 
     def execute_command(self, name, *args):
-        """Execute the registered command if it exists."""
-        if name in self.commands:
+        """Attempt to execute the registered command, handling errors if it fails."""
+        try:
             command_callable = self.commands[name]
-            if callable(command_callable.execute):
-                return command_callable.execute(*args)
-            else:
-                print(f"{name} is not callable")
-        else:
+            # Try to call the 'execute' method of the command
+            command_callable.execute(*args)
+        except KeyError:
+            # Handle the case where the command is not found
             print(f"Command '{name}' not found. Type 'menu' to see available commands.")
+        except AttributeError:
+            # Handle the case where the 'execute' method is missing or not callable
+            print(f"The command '{name}' cannot be executed.")
+        except Exception as e:
+            # Catch any other unexpected exceptions
+            print(f"An error occurred while executing the command '{name}': {e}")
+
 
     def get_registered_commands(self):
         """Return the list of registered command names."""
