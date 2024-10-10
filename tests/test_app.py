@@ -78,4 +78,4 @@ def test_app_greet_command(capfd, monkeypatch):
     captured = capfd.readouterr()
     
     # Verify that the 'greet' command output the greeting message
-    assert "Hello, welcome to the app!\n" in captured.out
+    assert "Hello, World!\n" in captured.out
