@@ -1,5 +1,6 @@
-from abc import ABC, abstractclassmethod
 '''
+from abc import ABC, abstractclassmethod
+
 class Command(ABC):
     @abstractclassmethod
     def execute(self):
