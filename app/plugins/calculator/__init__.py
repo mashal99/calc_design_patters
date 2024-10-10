@@ -1,10 +1,10 @@
-import sys
+from app.commands import Command
 from decimal import Decimal, InvalidOperation
 from app.calculator.operations import add, subtract, multiply, divide
 from app.calculator.calculation_history import CalculationsHistory
 from app.calculator.calculations import Calculation
 
-class CalculatorCommand:
+class CalculatorCommand(Command):  # Inherit from Command
     def __init__(self, operation_func=None, a=0, b=0):
         self.operation_func = operation_func
         self.a = a
