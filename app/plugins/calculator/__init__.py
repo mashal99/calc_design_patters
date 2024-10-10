@@ -1,26 +1,83 @@
-from app.commands import Command
+"""
+Module: calculator_command
+
+This module defines the `CalculatorCommand` class, which implements the command pattern for 
+handling various calculator operations such as addition, subtraction, multiplication, division, 
+as well as managing calculation history.
+
+The `CalculatorCommand` class inherits from the `Command` abstract base class and overrides 
+the `execute` method to dynamically prompt the user for input, perform arithmetic operations, 
+and maintain a history of calculations. It uses the `Calculation` class to compute results and 
+the `CalculationsHistory` class to store and retrieve past calculations.
+
+Classes:
+    - CalculatorCommand: Handles dynamic calculator 
+        input, arithmetic operations, and history management.
+    
+Dependencies:
+    - decimal: For precise decimal arithmetic and handling invalid operations.
+    - app.commands: Imports the base `Command` class.
+    - app.calculator.operations: Functions for performing 
+        arithmetic operations like add, subtract, multiply, divide.
+    - app.calculator.calculation_history: Manages storing and retrieving calculation history.
+    - app.calculator.calculations: Represents individual calculations and computes results.
+
+Example Usage:
+    # Create and execute a calculator command
+    calc_command = CalculatorCommand()
+    calc_command.execute()
+"""
 from decimal import Decimal, InvalidOperation
+from app.commands import Command
 from app.calculator.operations import add, subtract, multiply, divide
 from app.calculator.calculation_history import CalculationsHistory
 from app.calculator.calculations import Calculation
 
 class CalculatorCommand(Command):  # Inherit from Command
-    def __init__(self, operation_func=None, a=0, b=0):
-        self.operation_func = operation_func
-        self.a = a
-        self.b = b
+    """
+    CalculatorCommand class handles arithmetic operations and calculation history.
+    
+    The CalculatorCommand class allows the user to dynamically input arithmetic operations, such as
+    addition, subtraction, multiplication, and division, through the command-line interface. It also 
+    supports retrieving and clearing the history of previous calculations.
 
-    def execute(self):
-        """Dynamically ask for input when executing the command."""
+    Attributes:
+        operation_func (callable): The function to execute the operation (add, subtract, etc.).
+        num_one (Decimal): The first operand for the calculation.
+        num_two (Decimal): The second operand for the calculation.
+
+    Methods:
+        execute(): Prompts the user to select and perform an operation.
+        handle_arithmetic_operations(operation_name): 
+        Processes arithmetic operations like add, subtract, etc.
+        display_history(): Displays the history of past calculations.
+        clear_history(): Clears the stored calculation history.
+        get_operation_function(operation_name):
+        Maps the operation name to the corresponding function.
+    """
+    def __init__(self, operation_func=None, num_one=0, num_two=0):
+        self.operation_func = operation_func
+        self.num_one = num_one
+        self.num_two = num_two
+
+    def execute(self, *args):
+        """
+        Dynamically ask for input when executing the command.
+        
+        Args:
+            *args: Optional positional arguments.
+        """
         try:
             # Prompt for the operation and validate it
-            operation_name = input("Enter operation (add, subtract, multiply, divide, 'history', 'clear_history' or 'exit'): ").strip().lower()
+            operation_name = input(
+                "Enter operation (add, subtract, multiply, divide"
+                ", 'history', 'clear_history' or 'exit'): ").strip().lower()
 
             if operation_name == "exit":
                 print("Returning to main menu...")
                 return  # Exit the calculator and return to the main menu
 
-            elif operation_name == "history":
+            if operation_name == "history":
                 # Show calculation history
                 self.display_history()
 
@@ -32,8 +89,13 @@ class CalculatorCommand(Command):  # Inherit from Command
                 # Handle arithmetic operations
                 self.handle_arithmetic_operations(operation_name)
 
-        except Exception as e:
-            print(f"An unexpected error occurred: {e}")
+        except InvalidOperation:
+            print("Invalid operation or input was encountered.")
+        except ZeroDivisionError:
+            print("Error: Division by zero is not allowed.")
+        except ValueError:
+            print("Error: Invalid numeric value provided.")
+
 
     def handle_arithmetic_operations(self, operation_name):
         """Handles the arithmetic operations like add, subtract, etc."""
@@ -42,27 +104,27 @@ class CalculatorCommand(Command):  # Inherit from Command
             print(f"Error: '{operation_name}' is not a valid operation. Exiting to main menu.")
             return  # Exit on invalid operation
 
-        a = input("Enter first number: ").strip()
-        b = input("Enter second number: ").strip()
+        num_one = input("Enter first number: ").strip()
+        num_two = input("Enter second number: ").strip()
 
         try:
-            a_decimal, b_decimal = Decimal(a), Decimal(b)
+            num_one_decimal, num_two_decimal = Decimal(num_one), Decimal(num_two)
 
-            self.a = a_decimal
-            self.b = b_decimal
+            self.num_one = num_one_decimal
+            self.num_two = num_two_decimal
 
             # Create a Calculation instance with the operation function
-            calculation = Calculation(a_decimal, b_decimal, self.operation_func)
+            calculation = Calculation(num_one_decimal, num_two_decimal, self.operation_func)
 
             # Get the result using the Calculation instance
             result = calculation.get_result()
-            print(f"The result of {a} {operation_name} {b} is: {result}")
+            print(f"The result of {num_one} {operation_name} {num_two} is: {result}")
 
             # Add to history
             CalculationsHistory.add_calculation(calculation)
 
         except InvalidOperation:
-            print(f"Invalid number input: '{a}' or '{b}' is not a valid number.")
+            print(f"Invalid number input: '{num_one}' or '{num_two}' is not a valid number.")
         except ZeroDivisionError:
             print("Error: Division by zero is not allowed.")
 
@@ -72,7 +134,9 @@ class CalculatorCommand(Command):  # Inherit from Command
         if history:
             print("\nCalculation History:")
             for calc in history:
-                print(f"{calc.number_one} {calc.operation_func.__name__} {calc.number_two} = {calc.get_result()}")
+                print(
+                    f"{calc.number_one} {calc.operation_func.__name__}"
+                    f"{calc.number_two} = {calc.get_result()}")
         else:
             print("No calculations in history.")
 

@@ -1,3 +1,33 @@
+"""
+This test suite verifies the functionality of adding calculations, viewing calculation history, 
+and clearing calculation history in the app. The tests simulate user interactions with the REPL 
+(Read, Evaluate, Print, Loop) interface and check the expected behavior and output.
+
+Test cases include:
+
+1. **Adding Calculations and Viewing History**:
+    - Tests adding multiple calculations (addition and subtraction)
+        and verifies that the correct results are output.
+    - Checks that the user can view available commands through the 'menu' command.
+    - Ensures the 'calculator' command performs calculations correctly
+        and the history reflects the results.
+
+2. **Clearing Calculation History**:
+    - Tests adding a calculation (multiplication) and
+        verifies that the correct result is output.
+    - Checks that the 'menu' command lists available
+        commands and that the REPL works as expected.
+    - Ensures the history is cleared between test 
+        cases to avoid test data overlap.
+
+Each test case uses the 'monkeypatch' fixture to simulate 
+user input and the 'capfd' fixture to capture 
+the console output. The tests expect a `SystemExit` 
+exception when the user enters the 'exit' command, 
+indicating the REPL has exited correctly.
+"""
+
+
 import pytest
 from app import App  # Ensure that the App class is correctly imported
 from app.calculator.calculation_history import CalculationsHistory
@@ -40,7 +70,8 @@ def test_app_clear_calculator_history(monkeypatch, capfd):
     # Clear any existing history before starting the test
     CalculationsHistory.clear_history()
 
-    # Simulate user adding a calculation, viewing history, clearing history, then viewing history again
+    # Simulate user adding a calculation, viewing history,
+    # clearing history, then viewing history again
     inputs = iter([
         'calculator', 'multiply', '3', '4',  # First calculation (3 * 4)
         'menu',  # Type 'menu' to see available commands

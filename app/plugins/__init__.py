@@ -34,5 +34,4 @@ class CommandHandler:
     def get_registered_commands(self):
         """Return the list of registered command names."""
         return self.commands.keys()
-
 '''
