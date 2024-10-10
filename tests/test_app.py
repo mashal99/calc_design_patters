@@ -56,8 +56,8 @@ def test_app_menu_command(capfd, monkeypatch):
     # Capture the output of the REPL
     captured = capfd.readouterr()
     
-    # Verify that the 'menu' command listed all available commands
-    assert "Available commands:\n - calculator\n - greet\n - menu\n - exit\n" in captured.out
+     # Verify that the 'menu' command listed all available commands, including 'goodbye'
+    assert "Type 'exit' to exit.\n\nAvailable commands:\n - menu\n - calculator\n - exit\n - goodbye\n - greet\n" in captured.out
 
 
 # Test the 'greet' command
