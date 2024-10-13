@@ -35,12 +35,24 @@ from app import App
 from app.plugins.goodbye import GoodbyeCommand
 from app.plugins.greet import GreetCommand
 
+
+# Helper function to avoid code repetition
+def run_app_with_input(monkeypatch, capfd, inputs):
+    """Helper function to run the App with simulated inputs and capture the output."""
+    monkeypatch.setattr('builtins.input', lambda _: next(inputs))
+    app = App()
+    with pytest.raises(SystemExit):
+        app.run()
+    return capfd.readouterr()
+
+
 def test_greet_command(capfd):
     """Test that the GreetCommand prints the expected greeting."""
     command = GreetCommand()
     command.execute()
     out, _ = capfd.readouterr()  # Unpack the output
     assert out == "Hello, World!\n", "The GreetCommand should print 'Hello, World!'"
+
 
 def test_goodbye_command(capfd):
     """Test that the GoodbyeCommand prints the expected farewell message."""
@@ -50,26 +62,15 @@ def test_goodbye_command(capfd):
     assert out == "Goodbye\n", "The GoodbyeCommand should print 'Goodbye'"
 
 
-def test_app_greet_command(monkeypatch):
+def test_app_greet_command(monkeypatch, capfd):
     """Test that the REPL correctly handles the 'greet' command."""
-    # Simulate user entering 'greet' followed by 'exit'
     inputs = iter(['greet', 'exit'])
-    monkeypatch.setattr('builtins.input', lambda _: next(inputs))
+    out, _ = run_app_with_input(monkeypatch, capfd, inputs)
+    assert "Hello, World!" in out, "'greet' command did not print the expected message"
 
-    app = App()
-    with pytest.raises(SystemExit) as e:
-        app.run()  # Assuming App.start() is now a static method based on previous discussions
 
-    assert str(e.value) == "Exiting...", "The app did not exit as expected"
-
-def test_app_menu_command(monkeypatch):
-    """Test that the REPL correctly handles the 'greet' command."""
-    # Simulate user entering 'greet' followed by 'exit'
+def test_app_menu_command(monkeypatch, capfd):
+    """Test that the REPL correctly handles the 'menu' command."""
     inputs = iter(['menu', 'exit'])
-    monkeypatch.setattr('builtins.input', lambda _: next(inputs))
-
-    app = App()
-    with pytest.raises(SystemExit) as e:
-        app.run()  # Assuming App.start() is now a static method based on previous discussions
-
-    assert str(e.value) == "Exiting...", "The app did not exit as expected"
+    out, _ = run_app_with_input(monkeypatch, capfd, inputs)
+    assert "Available commands" in out, "'menu' command did not list available commands"
