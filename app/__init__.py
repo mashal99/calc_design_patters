@@ -13,14 +13,36 @@ Modules used:
 - `pkgutil`: For walking through packages and finding modules in the plugins directory.
 - `importlib`: For dynamically importing plugin modules.
 - `os`: For file path operations.
+- `dotenv`: For loading environment variables from a `.env` file.
+- `logging`: For logging application behavior and errors.
 """
 
 import pkgutil
 import importlib
 import os
+import logging
+from dotenv import load_dotenv
 from app.commands import CommandHandler
 from app.plugins.menu import MenuCommand
 from app.commands import Command
+
+# Load environment variables from the .env file
+load_dotenv()
+
+# Create 'log' folder if it doesn't exist
+if not os.path.exists('logs'):
+    os.makedirs('logs')
+
+# Configure logging to write to a file in the 'log' folder
+log_file = os.path.join('logs', 'app.log')
+logging.basicConfig(
+    level=logging.DEBUG if os.getenv("DEBUG") == "true" else logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(log_file),  # Log to file
+        logging.StreamHandler()         # Log to console
+    ]
+)
 
 class App:
     """
@@ -34,24 +56,27 @@ class App:
     """
     def __init__(self):
         self.command_handler = CommandHandler()
+        self.environment = os.getenv("ENVIRONMENT", "production")
+        self.debug = os.getenv("DEBUG", "false").lower() == 'true'
+        
+        # Log the startup message
+        logging.info(f"App started in {self.environment} environment.")
+        
+        if self.debug:
+            logging.debug("Debugging is enabled.")
 
     def load_plugins(self):
         """Dynamically load all command modules in the plugins directory, 
-            including subdirectories."""
+           including subdirectories."""
         plugins_package = 'app.plugins'
         package_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'plugins')
 
         # Walk through all modules and submodules in the plugins directory
         for module_finder, module_name, is_pkg in pkgutil.walk_packages([package_dir]):
-
-            module = module_finder
-            # Filter out non-module directories or unintended files
             if not is_pkg and not module_name.startswith(plugins_package):
                 continue
 
             full_module_name = f'{plugins_package}.{module_name.split(".")[-1]}'
-            # Debugging line to see what's being loaded
-            # print(f"Loading module: {full_module_name}")
 
             # Skip MenuCommand since it's manually registered
             if 'menu' in module_name:
@@ -65,15 +90,13 @@ class App:
                     attribute = getattr(module, attribute_name)
                     # Check if the attribute is a Command subclass
                     # (excluding the base Command class)
-                    if isinstance(attribute,
-                                  type) and issubclass(attribute,
-                                                       Command) and attribute is not Command:
-                        # Register the command using the module name
-                        # (or directory name) as the command name
+                    if isinstance(attribute, type) and issubclass(attribute, Command) and attribute is not Command:
+                        # Register the command using the module name (or directory name) as the command name
                         command_name = module_name.split('.')[-1].lower()
                         self.command_handler.register_command(command_name, attribute())
+                logging.info(f"Loaded module: {full_module_name}")
             except ModuleNotFoundError as e:
-                print(f"Error loading module {full_module_name}: {e}")
+                logging.error(f"Error loading module {full_module_name}: {e}")
 
     def run(self):
         """
@@ -86,11 +109,15 @@ class App:
         - Continuously accepts and executes user input as commands.
         """
         # Manually register the MenuCommand with command_handler
-        self.command_handler.register_command("menu",
-                                              MenuCommand(self.command_handler))
+        self.command_handler.register_command("menu", MenuCommand(self.command_handler))
         # Load dynamic plugins (excluding MenuCommand)
         self.load_plugins()
 
-        print("Type 'exit' to exit.")
-        while True:  # REPL: Read, Evaluate, Print, Loop
-            self.command_handler.execute_command(input(">>> ").strip())
+        logging.info("Type 'exit' to exit.")
+        while True:
+            try:
+                user_input = input(">>> ").strip()
+                logging.debug(f"User input: {user_input}")
+                self.command_handler.execute_command(user_input)
+            except Exception as e:
+                logging.error(f"Error executing command: {e}")
