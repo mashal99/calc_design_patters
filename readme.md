@@ -2,10 +2,15 @@
 
 This project is a command-line application that follows the command pattern and supports dynamic plugin loading. The app allows users to interact with various commands via a REPL (Read, Evaluate, Print, Loop) interface. Commands are dynamically loaded from the plugins directory, which means new functionality can be added to the app without modifying the core codebase.
 
+Additionally, the project now includes GitHub Actions for automated testing, environment variables for secure input handling, and logging for tracking application behavior and performance.
+
 ## Table of Contents
 - [Installation](#installation)
 - [Usage](#usage)
 - [Testing](#testing)
+- [Environment Variables](#environment-variables)
+- [GitHub Actions (CI)](#github-actions)
+- [Logging](#logging)
 - [Project Structure](#project-structure)
 - [Features](#features)
 - [Contributing](#contributing)
@@ -79,6 +84,46 @@ pytest --num_records=<number_of_tests>
 ```bash
 pytest --num_records=100
 ```
+
+## Environment Variables
+Environment variables are essential for securely managing sensitive data like API keys, passwords, and other inputs that shouldn't be hardcoded into the project or pushed to version control.
+
+### Setting up Environment Variables
+Create a .env file in the root directory of the project.
+```bash
+ENVIRONMENT=development
+DEBUG=true
+```
+
+## Logging
+Logging is a crucial aspect of any application, especially in a dynamic environment like this one. It helps in tracking the application's behavior, performance, and debugging issues.
+
+### Logging Levels
+- **DEBUG**: Detailed information, typically of interest only when diagnosing problems.
+- **INFO**: Confirmation that things are working as expected.
+- **WARNING**: An indication that something unexpected happened, or indicative of some problem in the near future (e.g., 'disk space low'). The software is still working as expected.
+- **ERROR**: Due to a more serious problem, the software has not been able to perform some function.
+- **CRITICAL**: A serious
+
+### How to use logging
+```python
+import logging
+
+logging.basicConfig(filename='app/logs/app.log', level=logging.INFO)
+
+logging.info("Application has started")
+logging.error("An error occurred")
+```
+Logs are stored in the app/logs/app.log file. You can view this file to track what’s happening in the application, including user inputs, command executions, and errors.
+
+## GitHub Actions (CI)
+GitHub Actions is a powerful tool for automating workflows and tasks in your project. In this project, GitHub Actions are used for Continuous Integration (CI).
+
+### How to Use GitHub Actions:
+- **Push Changes to GitHub:** After pushing changes to your repository, GitHub Actions will automatically run the tests defined in your test suite.
+- **View Results:** Go to the "Actions" tab on the GitHub repository to view the results of the automated tests. You'll be able to see which tests passed or failed and view logs for further investigation.
+
+
 
 ## Project Structure
 ├── app/
