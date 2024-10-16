@@ -30,20 +30,8 @@ when the 'exit' command is entered, ensuring the REPL
 terminates correctly.
 """
 
-import pytest
-from app import App
 from app.plugins.goodbye import GoodbyeCommand
 from app.plugins.greet import GreetCommand
-
-
-# Helper function to avoid code repetition
-def run_app_with_input(monkeypatch, capfd, inputs):
-    """Helper function to run the App with simulated inputs and capture the output."""
-    monkeypatch.setattr('builtins.input', lambda _: next(inputs))
-    app = App()
-    with pytest.raises(SystemExit):
-        app.run()
-    return capfd.readouterr()
 
 
 def test_greet_command(capfd):
@@ -62,15 +50,15 @@ def test_goodbye_command(capfd):
     assert out == "Goodbye\n", "The GoodbyeCommand should print 'Goodbye'"
 
 
-def test_app_greet_command(monkeypatch, capfd):
+def test_app_greet_command(run_app_with_input, monkeypatch, capfd):
     """Test that the REPL correctly handles the 'greet' command."""
     inputs = iter(['greet', 'exit'])
-    out, _ = run_app_with_input(monkeypatch, capfd, inputs)
-    assert "Hello, World!" in out, "'greet' command did not print the expected message"
+    captured = run_app_with_input(monkeypatch, capfd, inputs)
+    assert "Hello, World!" in captured.out, "'greet' command did not print the expected message"
 
 
-def test_app_menu_command(monkeypatch, capfd):
+def test_app_menu_command(run_app_with_input, monkeypatch, capfd):
     """Test that the REPL correctly handles the 'menu' command."""
     inputs = iter(['menu', 'exit'])
-    out, _ = run_app_with_input(monkeypatch, capfd, inputs)
-    assert "Available commands" in out, "'menu' command did not list available commands"
+    captured = run_app_with_input(monkeypatch, capfd, inputs)
+    assert "Available commands" in captured.out, "'menu' command did not list available commands"
