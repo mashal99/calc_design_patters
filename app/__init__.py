@@ -44,6 +44,9 @@ logging.basicConfig(
     ]
 )
 
+if os.getenv("ENVIRONMENT") != "production":
+    load_dotenv()
+
 class App:
     """
     The `App` class is responsible for loading and 
