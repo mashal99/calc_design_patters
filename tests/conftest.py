@@ -4,6 +4,8 @@ test cases based on command-line arguments, such as the number of records to gen
 """
 
 import random
+import pytest
+from app import App
 
 # Add a pytest command-line option for generating records
 def pytest_addoption(parser):
@@ -13,6 +15,47 @@ def pytest_addoption(parser):
     parser.addoption(
         "--num_records", action="store", default=10, type=int, help="Number of records to generate"
     )
+
+
+@pytest.fixture
+def run_app_with_input():
+    """
+    Provides a helper function for running the App with mocked user inputs 
+    and capturing REPL output during tests.
+
+    This function is designed to be used in test cases where the App's REPL 
+    (Read-Eval-Print Loop) is tested. It accepts a sequence of user inputs, 
+    runs the App, and captures the output to verify the behavior of the commands.
+
+        The helper function makes use of pytest fixtures for mocking input (`monkeypatch`)
+        and capturing output (`capfd`).
+
+        Returns:
+            _run_app_with_input (function): 
+                A nested function that accepts the `monkeypatch`, `capfd`, and `inputs` 
+                as arguments, runs the App, and captures REPL output for further 
+                assertions in test cases.
+    """
+    def _run_app_with_input(monkeypatch, capfd, inputs):
+        """
+        Helper function to run the App with mocked user inputs and capture REPL output.
+
+        Args:
+            monkeypatch: Fixture to mock built-in input.
+            capfd: Fixture to capture output from the REPL.
+            inputs: Iterable containing user inputs to be fed into the REPL.
+
+        Returns:
+            The captured output of the REPL.
+        """
+        monkeypatch.setattr('builtins.input', lambda _: next(inputs))
+        app = App()
+        with pytest.raises(SystemExit):
+            app.run()
+        captured = capfd.readouterr()
+        return captured
+    return _run_app_with_input
+
 
 
 def pytest_generate_tests(metafunc):
