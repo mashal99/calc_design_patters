@@ -113,6 +113,8 @@ class App:
         """
         # Manually register the MenuCommand with command_handler
         self.command_handler.register_command("menu", MenuCommand(self.command_handler))
+
+        
         # Load dynamic plugins (excluding MenuCommand)
         self.load_plugins()
 
